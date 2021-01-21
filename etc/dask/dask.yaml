@@ -1,0 +1,43 @@
+# Distributed
+distributed:
+  worker:
+    memory:
+      target: False    # Avoid spilling to disk
+      spill: False     # Avoid spilling to disk
+      pause: .80       # Pause worker threads at 80% use
+      terminate: 0.95  # Restart workers at 95% use
+
+# Jobqueue
+jobqueue:
+  # Slurm setup for the ANDES cluster
+  slurm:
+    cores: 128
+    processes: 128
+    memory: 1024GiB
+    queue: batch
+    project: GEN150
+    walltime: "04:00:00"
+    interface: "ib0"
+    header_skip:
+      - '-n'
+      - '--cpus-per-task'
+      - '--mem'
+    job_extra:
+      - '-N 4'
+      - '-o /dev/null'
+      - '-e /dev/null'
+
+# Lab extension
+labextension:
+  factory:
+    module: 'dask.distributed'
+    class: 'LocalCluster'
+    args: []
+    kwargs:
+      threads_per_worker: 1
+      dashboard_address: ':8900'
+  initial:
+    - name: Default Adaptive
+      adapt:
+        minimum: 0
+        maximum: 2
