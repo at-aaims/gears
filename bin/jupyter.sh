@@ -54,6 +54,12 @@ rm -rf ${JUPYTER_SOCKET}
 ssh -N -F ${SSHCFG} jupyter &
 SSHPID=$!
 
+# Prepare the temporary directory (fixed location)
+rm -rf ${TMP_DIR}
+mkdir -p ${TMP_BASE}
+export LOCAL_TMP_DIR=`mktemp -d`
+ln -s ${LOCAL_TMP_DIR} ${TMP_DIR}
+export DASK_TEMPORARY_DIRECTORY=${LOCAL_TMP_DIR}
 
 # Launch the jupyterlab instance
 . ${CONDA}
@@ -65,5 +71,5 @@ jupyter lab --no-browser --ip=127.0.0.1 --port=${PORT} 2>&1 | tee -a ${JUPYTER_L
 # CLeanup
 kill ${SSHPID}
 sleep 1
-rm -rf ${JUPYTER_SOCKET} ${SSHCFG} ${JUPYTER_HOST} ${JUPYTER_LOG}
+rm -rf ${JUPYTER_SOCKET} ${SSHCFG} ${JUPYTER_HOST} ${JUPYTER_LOG} ${LOCAL_TMPDIR} ${TMPDIR}
 exit 0

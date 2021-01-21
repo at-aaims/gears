@@ -1,6 +1,7 @@
 .gears
 .gears.*
 /run
+/.tmp
 .ipynb_checkpoints
 __pycache__
 *.swp

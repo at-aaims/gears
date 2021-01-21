@@ -10,15 +10,24 @@ cluster_name() {
     esac
 }
 
+# Gears Environment
 WRKDIR=${WRKDIR:-`pwd`}
 PROXY_SOCKET=${WRKDIR}/run/${CLUSTER_NAME}/socket
 ARCH=`uname -m`
 JUPYTER_SOCKET=${WRKDIR}/run/${CLUSTER_NAME}/jupyter.socket
 JUPYTER_HOST=${WRKDIR}/run/${CLUSTER_NAME}/hostname
-JUPYTER_LOG=${WRKDIR}/run/${CLUSTER_NAME}/log
-CONDA=${CONDA:-/sw/aaims/miniconda3/python3.8/${ARCH}/etc/profile.d/conda.sh}
-CONDA_ENV=${WRKDIR}/.gears.${CLUSTER_NAME}
+export TMP_BASE=${WRKDIR}/.tmp
+export TMP_DIR=${TMP_BASE}/`hostname -f`
+export JUPYTER_LOG=${WRKDIR}/run/${CLUSTER_NAME}/log
+export CONDA=${CONDA:-/sw/aaims/miniconda3/python3.8/${ARCH}/etc/profile.d/conda.sh}
+export CONDA_ENV=${WRKDIR}/.gears.${CLUSTER_NAME}
 
+#Dask 
+export DASK_ROOT_CONFIG=${WRKDIR}/etc/dask
+export DASK_LABEXTENSION__FACTORY__KWARGS__LOCAL_DIRECTORY=${TMP_DIR}
+export DASK_TEMPORARY_DIRECTORY=${TMP_DIR}
+
+# Helper functions
 ensure_tmpdir() {
     WRKDIR=$1
     CLUSTER_NAME=$2
