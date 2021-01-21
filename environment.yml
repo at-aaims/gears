@@ -1,0 +1,24 @@
+name: .gears
+prefix: ./.gears
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - pyyaml
+  - pytest
+  - loguru
+  - cython
+  - numpy
+  - pandas
+  - python-snappy
+  - fastparquet
+  - jupyterlab
+  - jupyter-server-proxy
+  - dask
+  - distributed
+  - dask-labextension
+  - nbconvert
+  - nbdime
+  - dvc
+  - pip=20.3.3
