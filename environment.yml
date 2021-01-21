@@ -20,5 +20,7 @@ dependencies:
   - dask-labextension
   - nbconvert
   - nbdime
-  - dvc
+  - nodejs
   - pip=20.3.3
+  - pip:
+      - dvc
