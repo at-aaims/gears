@@ -75,6 +75,8 @@ ssh-config:
 password:
 	@echo "@ Setting up jupyter server password"
 	conda run -p $(CONDA_ENV) jupyter server password
+	@echo "@ Setting up jupyter notebook password"
+	conda run -p $(CONDA_ENV) jupyter notebook password
 
 
 #
