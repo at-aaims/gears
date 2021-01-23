@@ -35,10 +35,12 @@ labextension:
     class: 'LocalCluster'
     args: []
     kwargs:
-      threads_per_worker: 1
+      n_workers: 1
+      processes: 1
+      threads_per_worker: 2
       dashboard_address: ':8900'
-  initial:
-    - name: Default Adaptive
-      adapt:
-        minimum: 0
-        maximum: 2
+  default:
+    n_workers: 1
+    processes: 1
+    threads_per_worker: 2
+    dashboard_address: ':8900'
