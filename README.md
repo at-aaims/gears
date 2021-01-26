@@ -129,7 +129,9 @@ $ cd ~/gears
 # Spawn and persist the backend tunnel (the hop 2)
 # Example spawns a new tmux session but you can use your own
 # or either use another terminal session manager
-$ tmux new-session -d -s make andes-lab
+$ tmux
+... tmux creates a session ...
+$ make andes-lab
 ... Requires manual PASSCODE input...
 ```
 
