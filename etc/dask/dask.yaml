@@ -12,7 +12,7 @@ jobqueue:
   # Slurm setup for the ANDES cluster
   slurm:
     cores: 32
-    processes: 32
+    processes: 8
     memory: 256GB
     queue: batch
     project: GEN150
@@ -23,8 +23,8 @@ jobqueue:
       - '--mem'
     job_extra:
       - '-N 1'
-      - '-c 1'
-      - '-n 32'
+      - '-c 32'
+      - '-n 1'
       - '-o /dev/null'
       - '-e /dev/null'
 
