@@ -1,9 +1,14 @@
 #
 # Common environment variables
 #
-ACCOUNT=gen150
-ARCH=`uname -m`
-USER=`whoami`
+
+export ACCOUNT=gen150
+export ARCH=`uname -m`
+export USER=`whoami`
+
+# Replicate the OLCF environment variables as a convention
+export MEMBERWORK=/gpfs/alpine/scratch/${USER}
+export PROJWORK=/gpfs/alpine/proj-shared
 
 # Gears Environment
 WRKDIR=${WRKDIR:-`pwd`}

@@ -1,9 +1,11 @@
 # Distributed
 distributed:
   worker:
+    validate: True
+    use_file_locking: False
     memory:
-      target: False    # Avoid spilling to disk
-      spill: False     # Avoid spilling to disk
+      target: 0.60      # Avoid spilling to disk
+      spill: 0.70       # Avoid spilling to disk
       pause: .80       # Pause worker threads at 80% use
       terminate: 0.95  # Restart workers at 95% use
 
@@ -21,10 +23,9 @@ jobqueue:
     header_skip:
       - '--cpus-per-task'
       - '--mem'
+    job_cpu: 32  
     job_extra:
       - '-N 1'
-      - '-c 32'
-      - '-n 1'
       - '-o /dev/null'
       - '-e /dev/null'
 
