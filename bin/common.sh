@@ -1,42 +1,72 @@
-cluster_name() {
-    SN=`hostname -f`
-    case ${SN} in
-    login*.summit.olcf.ornl.gov)
-        echo "summit";;
-    andes-login*.olcf.ornl.gov)
-        echo "andes";;
-    jupyter*)
-        echo "jupyter";;
-    esac
-}
+#
+# Common environment variables
+#
+ACCOUNT=gen150
+ARCH=`uname -m`
+USER=`whoami`
 
 # Gears Environment
 WRKDIR=${WRKDIR:-`pwd`}
+SCRATCHDIR_BASE=/gpfs/alpine/scratch/${USER}/${ACCOUNT}/.gears
 PROXY_SOCKET=${WRKDIR}/run/${CLUSTER_NAME}/socket
-ARCH=`uname -m`
 JUPYTER_SOCKET=${WRKDIR}/run/${CLUSTER_NAME}/jupyter.socket
 JUPYTER_HOST=${WRKDIR}/run/${CLUSTER_NAME}/hostname
-export TMP_BASE=${WRKDIR}/.tmp
-export TMP_DIR=${TMP_BASE}/`hostname -f`
 export JUPYTER_LOG=${WRKDIR}/run/${CLUSTER_NAME}/log
 export CONDA=${CONDA:-/sw/aaims/miniconda3/python3.8/${ARCH}/etc/profile.d/conda.sh}
 export CONDA_ENV=${WRKDIR}/.gears.${CLUSTER_NAME}
 
-#Dask 
+# Dask 
 export DASK_ROOT_CONFIG=${WRKDIR}/etc/dask
-export DASK_LABEXTENSION__FACTORY__KWARGS__LOCAL_DIRECTORY=${TMP_DIR}
-export DASK_TEMPORARY_DIRECTORY=${TMP_DIR}
+export DASK_TEMPORARY_DIRECTORY=${SCRATCHDIR_BASE}/dask
+export DASK_LABEXTENSION__FACTORY__KWARGS__LOCAL_DIRECTORY=${DASK_TEMPORARY_DIRECTORY}
+
+# Jupyterlab environments
+export JUPYTER_LAUNCHDIR=${WRKDIR}/.launchdir
 
 # Helper functions
-ensure_tmpdir() {
-    WRKDIR=$1
-    CLUSTER_NAME=$2
-    mkdir -p ${WRKDIR}/run/${CLUSTER_NAME}
-    chmod 700 ${WRKDIR}/run
-    chmod 700 ${WRKDIR}/run/${CLUSTER_NAME}
+cluster_name() {
+	# Cluster context identifier
+	SN=`hostname -f`
+	case ${SN} in
+	login*.summit.olcf.ornl.gov)
+		echo "summit";;
+	andes-login*.olcf.ornl.gov)
+		echo "andes";;
+	jupyter*)
+		echo "jupyter";;
+	esac
 }
 
-function EPHEMERAL_PORT() {
+ensure_tmpdir() {
+	# ensure a gears tmpdir
+	WRKDIR=$1
+	CLUSTER_NAME=$2
+	# TMPDIR in gears
+	mkdir -p ${WRKDIR}/run/${CLUSTER_NAME}
+	chmod 700 ${WRKDIR}/run
+	chmod 700 ${WRKDIR}/run/${CLUSTER_NAME}
+	echo "${WRKDIR}/run/${CLUSTER_NAME}"
+}
+
+ensure_scratchdir() {
+	# ensure a gears scratchspace on GPFS
+	CLUSTER_NAME=$1
+	# SCRATCHDIR in GPFS Scratch space
+	mkdir -p ${SCRATCHDIR_BASE}/run/${CLUSTER_NAME}
+	chmod 700 ${SCRATCHDIR_BASE}
+	echo "${SCRATCHDIR_BASE}/run/${CLUSTER_NAME}"
+}
+
+ensure_local_tmpdir() {
+	# ensure a node local temporary directory and link it to 
+	# somewhere we can use
+	rm -rf ${TMP_DIR}
+	mkdir -p ${TMP_BASE}
+	export LOCAL_TMP_DIR=`mktemp -d`
+	ln -s ${LOCAL_TMP_DIR} ${TMP_DIR}
+}
+
+EPHEMERAL_PORT() {
 	LOW_BOUND=49152
 	RANGE=16384
 	while true; do
@@ -47,4 +77,17 @@ function EPHEMERAL_PORT() {
 			break
 		fi
 	done
+}
+
+ensure_jupyter_launchdir() {
+	mkdir -p ${JUPYTER_LAUNCHDIR}/ccs
+	if [ ! -e ${JUPYTER_LAUNCHDIR}/scratch ]; then
+		ln -s /gpfs/alpine/scratch/${USER} ${JUPYTER_LAUNCHDIR}/scratch;
+	fi
+	if [ ! -e ${JUPYTER_LAUNCHDIR}/proj-shared ]; then
+		ln -s /gpfs/alpine/proj-shared ${JUPYTER_LAUNCHDIR}/proj-shared;
+	fi
+	if [ ! -e ${JUPYTER_LAUNCHDIR}/ccs/home ]; then
+		ln -s /ccs/home/${USER} ${JUPYTER_LAUNCHDIR}/ccs/home
+	fi
 }

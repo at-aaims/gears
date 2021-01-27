@@ -4,7 +4,11 @@
 # For stable & secure SSH jumphost destination, this script proxies this jupyter lab
 # instance with a unix socket created in a private location
 # Remote SSH port forwarding would use this unix socket to reach the random port
+
 #
+# CLI section
+#
+
 usage() {
 	echo "usage: `basename $0` <cluster_name>"
 }
@@ -12,10 +16,11 @@ if [ $# -lt 1 ]; then
 	usage
 	exit 1
 fi
+
+# Bringing in the common environment
 CLUSTER_NAME=${1}
 WRKDIR=`realpath $(dirname $0)/..`
 . ${WRKDIR}/bin/common.sh
-ensure_tmpdir ${WRKDIR} ${CLUSTER_NAME}
 
 # Check if we can spawn a host
 echo "@ Attempting spawning jupyter on `hostname -f`"
@@ -28,6 +33,9 @@ if [ ! -e ${CONDA_ENV} ]; then
 	echo "@ Cannot find the conda environment ${CONDA_ENV}"
 	exit 1
 fi
+
+# Ensuring scratch space related information
+ensure_tmpdir ${WRKDIR} ${CLUSTER_NAME}
 
 # Ephemeral port
 PORT=$(EPHEMERAL_PORT)
@@ -54,22 +62,20 @@ rm -rf ${JUPYTER_SOCKET}
 ssh -N -F ${SSHCFG} jupyter &
 SSHPID=$!
 
-# Prepare the temporary directory (fixed location)
-rm -rf ${TMP_DIR}
-mkdir -p ${TMP_BASE}
-export LOCAL_TMP_DIR=`mktemp -d`
-ln -s ${LOCAL_TMP_DIR} ${TMP_DIR}
-export DASK_TEMPORARY_DIRECTORY=${LOCAL_TMP_DIR}
-
 # Launch the jupyterlab instance
 . ${CONDA}
 conda activate ${CONDA_ENV}
+echo "@ Creating jupyter server working directory"
+ensure_jupyter_launchdir
 echo "@ Launching jupyterlab from `hostname -f`"
 echo `hostname -f` > ${JUPYTER_HOST}
+
+pushd ${JUPYTER_LAUNCHDIR}
 jupyter lab --no-browser --ip=127.0.0.1 --port=${PORT} 2>&1 | tee -a ${JUPYTER_LOG}
+popd
 
 # CLeanup
 kill ${SSHPID}
 sleep 1
-rm -rf ${JUPYTER_SOCKET} ${SSHCFG} ${JUPYTER_HOST} ${JUPYTER_LOG} ${LOCAL_TMPDIR} ${TMPDIR}
+rm -rf ${JUPYTER_SOCKET} ${SSHCFG} ${JUPYTER_HOST} ${JUPYTER_LOG}
 exit 0

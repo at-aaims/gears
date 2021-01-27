@@ -12,3 +12,4 @@ tmp
 .integrate-test.lsf
 .done.mrk
 *.log
+/.launchdir
