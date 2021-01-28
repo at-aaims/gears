@@ -9,7 +9,12 @@ endef
 CLUSTER_NAME = $(shell $(SHELL_INC); cluster_name)
 CONDA ?= /sw/aaims/miniconda3/python3.8/$(ARCH)
 CONDA_ENV ?= $(CWD)/.gears.$(CLUSTER_NAME)
-CONDA_EXE ?= . ${CONDA}/etc/profile.d/conda.sh && conda
+define CONDA_EXE
+. ${CONDA}/etc/profile.d/conda.sh; \
+	export CONDA_PKGS_DIRS=~/.conda/pkgs; \
+	export CONDA_ENVS_PATH=~/.conda/envs; \
+	conda
+endef
 APP_PATH ?= $(CONDA_ENV)
 VERSION ?= $(shell cat ./VERSION)
 VERSION_POSTFIX ?=
