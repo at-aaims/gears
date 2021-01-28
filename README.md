@@ -87,11 +87,21 @@ $ vi ~/.ssh/config
 Assuming user is 'user' & gears location is /ccs/home/user/gears, below is an
 example ssh configuration entry for your laptop or personal computer.
 
+Edit ~/.ssh/config
+
 ```
-# ~/.ssh/ssh_config
+# ~/.ssh/config
 Host andes-jupyter
+  Hostname hub.ccs.ornl.gov
   User <nccs_account>
-  LocalForward 38888 /ccs/home/<nccs_account>/gears/run/andes.sck
+  LocalForward 38888 /ccs/home/<nccs_account>/gears/run/andes/socket
+```
+
+Then you would be able to proceed with a tunnel enabled at port 38888 from you
+local machine.
+
+```
+$ ssh andes-jupyter
 ```
 
 The above excerpt with the right information could be acquired by utilizing the
@@ -105,8 +115,9 @@ $ ssh <nccs_account>@hub.ccs.ornl.gov
 $ cd ~/gears
 $ make ssh-config
 Host andes-jupyter
+  Hostname hub.ccs.ornl.gov
   User <nccs_account>
-  LocalForward 38888 /ccs/home/<nccs_account>/gears/run/andes.sck
+  LocalForward 38888 /ccs/home/<nccs_account>/gears/run/andes/socket
 $
 ```
 
@@ -131,6 +142,7 @@ $ cd ~/gears
 # or either use another terminal session manager
 $ tmux
 ... tmux creates a session ...
+... tmux default escape sequnce is ctrl+b / to detach you do a 'ctrl+b' then 'd' ...
 $ make andes-lab
 ... Requires manual PASSCODE input...
 ```
