@@ -9,6 +9,7 @@ endef
 CLUSTER_NAME = $(shell $(SHELL_INC); cluster_name)
 CONDA ?= /sw/aaims/miniconda3/python3.8/$(ARCH)
 CONDA_ENV ?= $(CWD)/.gears.$(CLUSTER_NAME)
+CONDA_EXE ?= . ${CONDA}/etc/profile.d/conda.sh && conda
 APP_PATH ?= $(CONDA_ENV)
 VERSION ?= $(shell cat ./VERSION)
 VERSION_POSTFIX ?=
@@ -40,11 +41,11 @@ help:
 .PHONY: .deploy .integrate-test
 .deploy:
 	@if [ ! -e $(APP_PATH) ]; then \
-		conda info; \
-		conda env create -p $(APP_PATH) -f ./environment.yml; \
+		$(CONDA_EXE) info; \
+		$(CONDA_EXE) env create -p $(APP_PATH) -f ./environment.yml; \
 	else \
-		conda info; \
-		conda env update -p $(APP_PATH) -f ./environment.yml; \
+		$(CONDA_EXE) info; \
+		$(CONDA_EXE) env update -p $(APP_PATH) -f ./environment.yml; \
 	fi
 
 
@@ -57,7 +58,7 @@ init:
 
 fini:
 	-@echo "@ Removing conda environment"
-	-conda env remove -p $(APP_PATH)
+	-$(CONDA_EXE) env remove -p $(APP_PATH)
 	-rm -rf $(CONDA_ENV)
 
 env:
@@ -74,9 +75,9 @@ ssh-config:
 .PHONY: password
 password:
 	@echo "@ Setting up jupyter server password"
-	conda run -p $(CONDA_ENV) jupyter server password
+	$(CONDA_EXE) run -p $(CONDA_ENV) jupyter server password
 	@echo "@ Setting up jupyter notebook password"
-	conda run -p $(CONDA_ENV) jupyter notebook password
+	$(CONDA_EXE) run -p $(CONDA_ENV) jupyter notebook password
 
 
 #

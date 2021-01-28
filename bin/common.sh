@@ -37,6 +37,8 @@ cluster_name() {
 		echo "summit";;
 	andes-login*.olcf.ornl.gov)
 		echo "andes";;
+	dtn*.ccs.ornl.gov)
+		echo "dtn";;
 	jupyter*)
 		echo "jupyter";;
 	esac
