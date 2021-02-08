@@ -13,6 +13,7 @@ dependencies:
   - pandas
   - python-snappy
   - fastparquet
+  - pyarrow
   - jupyterlab
   - jupyter-server-proxy
   - dask
