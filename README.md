@@ -16,15 +16,7 @@ OLCF resources.  The goal is to address commonly known issues specific to site
   - Dask related jupyter extensions, plugins, configurations and examples
     performing large scale interactive data analysis using on-demand OLCF
     compute resources (i.e., adaptive Dask worker pools)
-* DVC
-  - Data management supporting scripts and configurations 
-* Git based data analysis workspace
-  - Provides tools and templates that enables git-based data analysis
-    workspaces that manages configurations
-* OLCF center-wide filesystem and HPSS system
-  - Data movement and management job scripts and tools that implements
-    a pre-defined convention that suits OLCF use
-* Conda environments
+* Conda environment
   - Provides a minimal conda environment and a set of scripts that can support
     multiple conda custom environments underneath
 * Shared use
@@ -210,20 +202,29 @@ with a UNIX socket that located on a well known fixed location in the user's
 home directory.
 
 
+# Conda environment
 
-# Interactive Dask sessions on an HPC cluster
+Some of the AAIMS group projects will be relying on the use of "gears"
+providing a user specific conda environment.
+For example, gears include basic tools, modules and libraries which the scripts
+would rely on unless the project bring in their own environment.
 
-TBD
+Here, gears should be orthogonal from whatever the project is doing but having
+a well known environment often comes to be convenient.
+It is up to the users or projects to maintain their own conda environments or
+python virtual environments for other advanced use cases.
 
-# DVC based data management
 
-TBD
+# Interactive Jupyter sessions on an HPC cluster power by Dask
 
-# Git workspaces powered by gears
+A verbose example of managing an interactive Dask Jupyter notebook session
+is documented in `./examples/dask-slurm-andes.ipynb`.
+An individual can employ up to 128 cores and 1TB memory from the Andes cluster to run a
+dask worker pool that will help the Jupyter notebook session with the required
+compute power.
 
-TBD
+Currently, gears provides the necessary configurations and scripts to enable
+such a practice.
 
-# Conda environments
 
-TBD
 
