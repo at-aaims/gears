@@ -50,7 +50,7 @@ $ ssh andes
 
 # Install gears
 $ cd $HOME
-$ git clone https://code.ornl.gov/wg8/gears
+$ git clone https://github.com/at-aaims/gears
 
 # Create the conda environment for gears on Andes
 $ cd ./gears
